@@ -1,0 +1,99 @@
+import java.sql.*;
+import java.util.*;
+
+public class PartB {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        String url = "jdbc:mysql://localhost:3306/testdb";
+        String user = "root";
+        String pass = "password";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(url, user, pass);
+            con.setAutoCommit(false);
+
+            while (true) {
+                System.out.println("\n1.Insert  2.Display  3.Update  4.Delete  5.Exit");
+                int ch = sc.nextInt();
+
+                if (ch == 1) {
+                    PreparedStatement ps = con.prepareStatement(
+                            "INSERT INTO Product(ProductName, Price, Quantity) VALUES (?, ?, ?)");
+
+                    System.out.print("Product Name: ");
+                    String name = sc.next();
+                    System.out.print("Price: ");
+                    double price = sc.nextDouble();
+                    System.out.print("Quantity: ");
+                    int qty = sc.nextInt();
+
+                    ps.setString(1, name);
+                    ps.setDouble(2, price);
+                    ps.setInt(3, qty);
+                    ps.executeUpdate();
+
+                    con.commit();
+                    System.out.println("Product Inserted.");
+
+                } else if (ch == 2) {
+                    Statement st = con.createStatement();
+                    ResultSet rs = st.executeQuery("SELECT * FROM Product");
+
+                    while (rs.next()) {
+                        System.out.println(rs.getInt("ProductID") + " "
+                                + rs.getString("ProductName") + " "
+                                + rs.getDouble("Price") + " "
+                                + rs.getInt("Quantity"));
+                    }
+
+                } else if (ch == 3) {
+                    PreparedStatement ps = con.prepareStatement(
+                            "UPDATE Product SET ProductName=?, Price=?, Quantity=? WHERE ProductID=?");
+
+                    System.out.print("Enter ProductID to Update: ");
+                    int id = sc.nextInt();
+                    System.out.print("New Name: ");
+                    String name = sc.next();
+                    System.out.print("New Price: ");
+                    double price = sc.nextDouble();
+                    System.out.print("New Quantity: ");
+                    int qty = sc.nextInt();
+
+                    ps.setString(1, name);
+                    ps.setDouble(2, price);
+                    ps.setInt(3, qty);
+                    ps.setInt(4, id);
+                    ps.executeUpdate();
+
+                    con.commit();
+                    System.out.println("Product Updated.");
+
+                } else if (ch == 4) {
+                    PreparedStatement ps = con.prepareStatement(
+                            "DELETE FROM Product WHERE ProductID=?");
+
+                    System.out.print("Enter ProductID to Delete: ");
+                    int id = sc.nextInt();
+
+                    ps.setInt(1, id);
+                    ps.executeUpdate();
+
+                    con.commit();
+                    System.out.println("Product Deleted.");
+
+                } else if (ch == 5) {
+                    break;
+                } else {
+                    System.out.println("Invalid Choice");
+                }
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
