@@ -1,0 +1,65 @@
+import java.util.*;
+
+public class PartC {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        StudentDAO dao = new StudentDAO();
+
+        while (true) {
+            System.out.println("\n1.Add  2.View  3.Update  4.Delete  5.Exit");
+            int ch = sc.nextInt();
+
+            try {
+                if (ch == 1) {
+                    System.out.print("StudentID: ");
+                    int id = sc.nextInt();
+                    System.out.print("Name: ");
+                    String name = sc.next();
+                    System.out.print("Department: ");
+                    String dept = sc.next();
+                    System.out.print("Marks: ");
+                    double marks = sc.nextDouble();
+
+                    dao.addStudent(new Student(id, name, dept, marks));
+                    System.out.println("Student Added.");
+
+                } else if (ch == 2) {
+                    List<Student> list = dao.viewStudents();
+                    for (Student s : list) {
+                        System.out.println(s.getStudentID() + " "
+                                + s.getName() + " "
+                                + s.getDepartment() + " "
+                                + s.getMarks());
+                    }
+
+                } else if (ch == 3) {
+                    System.out.print("StudentID: ");
+                    int id = sc.nextInt();
+                    System.out.print("New Name: ");
+                    String name = sc.next();
+                    System.out.print("New Department: ");
+                    String dept = sc.next();
+                    System.out.print("New Marks: ");
+                    double marks = sc.nextDouble();
+
+                    dao.updateStudent(new Student(id, name, dept, marks));
+                    System.out.println("Student Updated.");
+
+                } else if (ch == 4) {
+                    System.out.print("StudentID: ");
+                    int id = sc.nextInt();
+                    dao.deleteStudent(id);
+                    System.out.println("Student Deleted.");
+
+                } else if (ch == 5) {
+                    break;
+                } else {
+                    System.out.println("Invalid Choice.");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
